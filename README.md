@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-Its clear that microsofts solutione exporter sucks and is too slow 🥀 , use this instead ❤️
+Its clear that microsofts powerapps solution exporter sucks and is too slow 🥀 , use this instead ❤️
 
 ![PowerApps Solution Exporter Demo](toolPic.png)
 
