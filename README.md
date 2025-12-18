@@ -166,25 +166,25 @@ AVAILABLE SOLUTIONS
 ======================================================================
 #    Unique Name                    Friendly Name             Version
 ----------------------------------------------------------------------
-1    CSOptionSets                   1: CS OptionSets          21.4.0.0
-2    CSWebResources                 2_CS_Web_Resources        60.5.0.0
-3    CSPCFComponents                2.1: CS PCF Components    7.0.0.0
-4    CSCustomPages                  2.2: CS Custom Pages      4.4.0.0
-5    CSEntities                     3_CS_Entities             60.0.0.0
+1    ContosoCore                    Contoso Core Solution     1.0.0.0
+2    ContosoWebResources            Contoso Web Resources     2.1.0.0
+3    ContosoComponents              Contoso PCF Components    1.5.0.0
+4    ContosoCustomPages             Contoso Custom Pages      3.0.0.0
+5    ContosoEntities                Contoso Entities          4.2.0.0
 ----------------------------------------------------------------------
 Total: 5 solutions
 
 ----------------------------------------------------------------------
 Enter the number of the solution to export (or 'q' to quit): 2
 
-📥 Exporting solution: CSWebResources
-   Output: ./exports/CSWebResources_20241218_143022.zip
+📥 Exporting solution: ContosoWebResources
+   Output: ./exports/ContosoWebResources_20241218_143022.zip
    Type: Unmanaged
 
-⠹ Exporting CSWebResources... [01:23]
+⠹ Exporting ContosoWebResources... [01:23]
 
-✅ Exporting CSWebResources completed in 01:23
-   📁 File: exports/CSWebResources_20241218_143022.zip
+✅ Exporting ContosoWebResources completed in 01:23
+   📁 File: exports/ContosoWebResources_20241218_143022.zip
    📊 Size: 2.45 MB
 ```
 
