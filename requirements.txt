@@ -1,0 +1,10 @@
+# PowerApps Solution Exporter
+# 
+# This script uses only Python standard library modules.
+# No additional packages are required.
+#
+# However, you must have the PowerApps CLI (pac) installed:
+#   - See README.md for installation instructions
+#
+# Python version: 3.9+
+
