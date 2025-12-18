@@ -37,10 +37,10 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/powerapps-solution-exporter"
-Documentation = "https://github.com/yourusername/powerapps-solution-exporter#readme"
-Repository = "https://github.com/yourusername/powerapps-solution-exporter.git"
-Issues = "https://github.com/yourusername/powerapps-solution-exporter/issues"
+Homepage = "https://github.com/christophergyman/powerapps-solution-exporter"
+Documentation = "https://github.com/christophergyman/powerapps-solution-exporter#readme"
+Repository = "https://github.com/christophergyman/powerapps-solution-exporter.git"
+Issues = "https://github.com/christophergyman/powerapps-solution-exporter/issues"
 
 [project.scripts]
 solution-exporter = "solution_exporter:main"

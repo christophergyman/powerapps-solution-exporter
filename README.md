@@ -114,7 +114,7 @@ pac help
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/powerapps-solution-exporter.git
+   git clone https://github.com/christophergyman/powerapps-solution-exporter.git
    cd powerapps-solution-exporter
    ```
 
