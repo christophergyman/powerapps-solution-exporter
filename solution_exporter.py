@@ -114,48 +114,138 @@ def get_auth_profiles() -> list[dict]:
         lines = result.stdout.strip().split('\n')
         # Parse the output - looking for profile entries
         for line in lines:
-            if "Active" in line or "http" in line.lower():
-                profiles.append({"raw": line})
+            # Skip header and separator lines
+            if '---' in line or 'Index' in line or not line.strip():
+                continue
+            # Look for lines with environment URLs (actual profiles)
+            if 'http' in line.lower() and 'crm' in line.lower():
+                # Extract index number from [N] format
+                index = None
+                is_active = '*' in line
+                if line.strip().startswith('['):
+                    try:
+                        idx_str = line.split(']')[0].replace('[', '').strip()
+                        index = int(idx_str)
+                    except (ValueError, IndexError):
+                        pass
+                profiles.append({
+                    "raw": line,
+                    "index": index,
+                    "is_active": is_active
+                })
     
     return profiles
+
+
+def select_auth_profile(index: int) -> bool:
+    """Select an authentication profile by index using pac auth select."""
+    print(f"\n🔄 Switching to profile {index}...")
+    result = run_pac_command(["auth", "select", "--index", str(index)])
+    
+    if result.returncode == 0:
+        print(f"✅ Successfully switched to profile {index}")
+        return True
+    else:
+        print(f"❌ Failed to switch to profile {index}")
+        if result.stderr:
+            print(f"   Error: {result.stderr}")
+        return False
 
 
 def ensure_authenticated() -> bool:
     """Check if authenticated, prompt to authenticate if not."""
     print("\n🔐 Checking authentication status...")
     
-    result = run_pac_command(["auth", "list"])
+    profiles = get_auth_profiles()
     
-    # Check if we have any active profiles
-    has_active = False
-    if result.returncode == 0 and result.stdout:
-        output = result.stdout.lower()
-        # Look for indicators of active authentication
-        if "active" in output or ("http" in output and "universal" not in output.lower()):
-            # Filter out header lines
-            lines = result.stdout.strip().split('\n')
-            for line in lines:
-                # Skip header/separator lines
-                if '---' in line or 'Index' in line or not line.strip():
-                    continue
-                if 'http' in line.lower() and 'crm' in line.lower():
-                    has_active = True
-                    break
-    
-    if has_active:
-        print("✅ Found existing authentication profile.")
-        print("\n📋 Current profiles:")
-        print(result.stdout)
+    if profiles:
+        # Find the currently active profile
+        active_profile = None
+        for p in profiles:
+            if p.get('is_active'):
+                active_profile = p
+                break
         
-        use_existing = input("\nUse existing profile? (Y/n): ").strip().lower()
-        if use_existing in ['', 'y', 'yes']:
-            return True
+        print("✅ Found existing authentication profiles.")
+        print("\n📋 Available profiles:")
+        
+        # Re-fetch raw output for display
+        result = run_pac_command(["auth", "list"])
+        if result.stdout:
+            print(result.stdout)
+        
+        # Determine the active index for display
+        active_idx = active_profile.get('index') if active_profile else '?'
+        
+        print("-" * 60)
+        print(f"Currently active profile: [{active_idx}] (marked with *)")
+        print("\nOptions:")
+        print("  • Enter a number (1, 2, 3...) to switch to that profile")
+        print("  • Press Enter or 'y' to use the current active profile")
+        print("  • Enter 'n' to create a new authentication")
+        print("-" * 60)
+        
+        # Get user input with robust handling
+        try:
+            user_input = input("\nYour choice: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\n❌ Input cancelled.")
+            return False
+        
+        # Clean the input - remove any stray control characters
+        user_input = ''.join(c for c in user_input if c.isprintable()).strip().lower()
+        
+        # Handle empty input or 'y' - use current active profile
+        if user_input in ['', 'y', 'yes']:
+            if active_profile:
+                print(f"\n✅ Using current active profile [{active_idx}]")
+                return True
+            else:
+                print("\n⚠️  No active profile detected. Please select a profile number.")
+                # Fall through to prompt again or create new
+        
+        # Handle 'n' - create new auth
+        elif user_input in ['n', 'no', 'new']:
+            pass  # Fall through to create new auth
+        
+        # Handle numeric input - select that profile
+        else:
+            try:
+                selected_idx = int(user_input)
+                # Validate the index exists in our profiles
+                valid_indices = [p.get('index') for p in profiles if p.get('index') is not None]
+                
+                if selected_idx in valid_indices:
+                    # Check if already active
+                    if active_profile and active_profile.get('index') == selected_idx:
+                        print(f"\n✅ Profile [{selected_idx}] is already active")
+                        return True
+                    
+                    # Switch to the selected profile
+                    if select_auth_profile(selected_idx):
+                        return True
+                    else:
+                        print("❌ Failed to switch profile. Please try again.")
+                        return False
+                else:
+                    print(f"\n❌ Invalid profile number: {selected_idx}")
+                    print(f"   Available profiles: {valid_indices}")
+                    return False
+                    
+            except ValueError:
+                print(f"\n❌ Invalid input: '{user_input}'")
+                print("   Please enter a number, 'y', or 'n'")
+                return False
     
     # Need to create new auth
-    print("\n📝 No active profile found or creating new one...")
+    print("\n📝 Creating new authentication profile...")
     print("This will open a browser window for you to sign in.\n")
     
-    env_url = input("Enter your environment URL (e.g., https://yourorg.crm.dynamics.com): ").strip()
+    try:
+        env_url = input("Enter your environment URL (e.g., https://yourorg.crm.dynamics.com): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        print("\n❌ Input cancelled.")
+        return False
     
     if not env_url:
         print("❌ Environment URL is required.")

@@ -92,3 +92,7 @@ exports/
 .env.local
 config.local.py
 
+# Wiki example files
+New-Wiki.md
+exampleWikiPage.md
+
