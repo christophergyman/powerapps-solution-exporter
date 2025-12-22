@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
+Its clear that microsofts powerapps solution exporter sucks and is too slow 🥀 , use this instead ❤️
+
 ![PowerApps Solution Exporter Demo](toolPic.png)
 
 A Python CLI tool to download and export unmanaged PowerApps solutions from Dynamics 365 / Power Platform environments. Perfect for documenting your solutions, creating backups, or setting up CI/CD pipelines.
